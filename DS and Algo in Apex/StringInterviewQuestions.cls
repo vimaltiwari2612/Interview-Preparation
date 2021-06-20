@@ -273,7 +273,6 @@ public class StringInterviewQuestions {
                     if(oldStrSize < sizeOfStr){
                         oldStrSize = sizeOfStr;
                     }
-                    System.debug('reset oldStrSize '+oldStrSize);
                     sizeOfStr = 0;
                     currrentCount=k;
                     item.clear();
@@ -303,7 +302,8 @@ public class StringInterviewQuestions {
     }
     
     /*
-    Given three strings A, B and C your task is to complete the function isInterleave which returns true if C is an interleaving of A and B else returns false. C is said to be interleaving A and B, if it contains all characters of A and B and order of all characters in individual strings is preserved.
+    Given three strings A, B and C your task is to complete the function isInterleave which returns true if C is an interleaving of A and B else returns false. 
+    C is said to be interleaving A and B, if it contains all characters of A and B and order of all characters in individual strings is preserved.
 
     Example 1:
     
@@ -322,11 +322,165 @@ public class StringInterviewQuestions {
     */
     public static boolean isInterLeave(String a,String b,String c)
 	{
-        return false;
+	    String[] itemsInA = a.split('');
+	    String[] itemsInB = b.split('');
+	    integer lastIndex = -1;
+	    //all char of A in C
+	    System.debug('processing A '+a);
+	    for(String item : itemsInA){
+	        system.debug('c '+ c +'  has '+item);
+	        integer index = c.indexOf(item); 
+	        System.debug(index + ' '+ lastIndex );
+	        if(lastIndex == -1){
+	            lastIndex = index; continue;
+	        }
+	        //if not present or check the order is not correct
+	        if(index == -1 || lastIndex > index) return false;
+	        lastIndex = index;
+	    }
+	    System.debug('processing B '+b);
+	    lastIndex = -1;
+	    //all char of B in C
+	    for(String item : itemsInB){
+	        system.debug('c '+ c +'  has '+item);
+	        integer index = c.indexOf(item); 
+	        
+	        System.debug(index + ' '+ lastIndex);
+	        if(lastIndex == -1){
+	            lastIndex = index; continue;
+	        }
+	        //if not present or check the order is not correct
+	        if(index == -1 || lastIndex > index) return false;
+	        lastIndex = index;
+	    }
+	    
+	    return true;
 	}
-     
     
+    
+    //Find largest word in dictionary
+    /*
+    Given a string and a string dictionary, find the longest string in the dictionary that can be formed by deleting some characters of the given string. If there are more than one possible results, return the longest word with the smallest lexicographical order. If there is no possible result, return the empty string.
+
+    Example 1:
+    
+    Input: d = {"ale", "apple", "monkey", "plea"}
+           S = "abpcplea"
+    Output: "apple" 
+    Explanation: After deleting "b", "c"
+    "a" S became "apple" which is present
+    in d.
+    Example 2:
+    
+    Input: d = {"a", "b", "c"}
+           S = "abpcplea"
+    Output: "a"
+    Explanation: After deleting "b", "p"
+    "c", "p", "l", "e", "a" S became 
+    "a" which is present in d.
+        
+    */
+    public static String findLongestWord(String S, List<String> dictionary) {
+        
+        String lastFoundWord = '';
+        
+        for(String word : dictionary){
+            //check if it is present in given S or not
+            integer lastIndex = -1;
+            boolean found = true;
+            for(String letter : word.split('')){
+    	        integer index = S.indexOf(letter); 
+    	        if(lastIndex == -1){
+    	            lastIndex = index; continue;
+    	        }
+    	         if(lastIndex > index){
+	                //might be a repeating letter, so find it's next occurance
+	                integer newIndex = S.substring(index+1).indexOf(letter); 
+	                if(newIndex != -1 && newIndex > lastIndex){
+	                    index = newIndex;
+	                }
+    	        }
+    	        //if not present or check the order is not correct
+    	        if(index == -1 || lastIndex > index){
+    	            found = false;
+    	            break;
+    	        }
+    	        lastIndex = index;
+            }
+            
+            if(found){
+                if(lastFoundWord.length() < word.length()){
+                    lastFoundWord = word;
+                }
+            }
+        }
+        System.debug(lastFoundWord);
+        return lastFoundWord;
+    }
+    
+    
+    //sum of all number in a list
+    public static Integer sumAll(List<String> items){
+        if(items == null || items.size() == 0) return 0;
+        //find the max length string
+        integer size = 0;
+        for(String item : items){
+            if(item.length() > size){
+                size = item.length();
+            }
+        }
+        
+        //not count
+        integer count = 0;
+        //itereate and convert
+        String a = items.get(0);
+        
+        //do while
+        for(integer i = 1 ; i < items.size() ; i++) {
+            String b = items[i];
+            
+            //preppand 0's
+            while(b.length() < size){
+               b = '0'+b;
+            }
+             //preppand 0's
+            while(a.length() < size){
+               a = '0'+a;
+            }
+            //now let's sum them
+            integer j = size - 1;
+            integer sum = 0;
+            integer carry = 0;
+            String newStr = '';
+            while(j >= 0){
+                integer k = Integer.valueOf(a.substring(j,j+1));
+                integer l = Integer.valueOf(b.substring(j,j+1));
+                j--;
+                sum = (carry + k + l);
+                carry = sum/10;
+                integer rem = Math.mod(sum,10);
+                newStr = rem + newStr;
+            }
+            if(carry > 0){
+                newStr = String.valueOf(carry) + newStr;
+            }
+            a = newStr;
+            if(a.length() > size){ 
+                size = a.length();
+            }
+        }
+        return Integer.valueOf(a);
+    }
+    
+    //testing
     public static void testMethods(){
+        
+        System.assert(StringInterviewQuestions.sumAll(new List<String>{'123','31'}) == 154);
+        System.assert(StringInterviewQuestions.sumAll(new List<String>{'20','40','3'}) == 63);
+        System.assert(StringInterviewQuestions.sumAll(new List<String>{'100','1','19'}) == 120);
+        
+        System.assert(StringInterviewQuestions.isAnagram('geeksforgeeks','forgeeksgeeks') == true);
+        System.assert(StringInterviewQuestions.isAnagram('allergy','allergic') == false);
         
         System.assert(StringInterviewQuestions.remove('test','t') == 'es');
         System.assert(StringInterviewQuestions.remove('aaabbcc','b') == 'aaacc');
@@ -350,7 +504,13 @@ public class StringInterviewQuestions {
         System.assert(StringInterviewQuestions.longestkSubstr('abbbcd',1) == 3); 
 
         System.assert(StringInterviewQuestions.isInterLeave('YX','X', 'XXY') == false);
-        //System.assert(StringInterviewQuestions.isInterLeave('XY','X','XXY') == true);
+        System.assert(StringInterviewQuestions.isInterLeave('XY','X','XXY') == true);
+        System.assert(StringInterviewQuestions.isInterLeave('ABC','ADE','ABCADE') == true);
+        System.assert(StringInterviewQuestions.isInterLeave('ABC','ADE','AABCDE') == true);
+        
+        System.assert(StringInterviewQuestions.findLongestWord('abpcplea',new List<String>{'ale', 'apple', 'monkey', 'plea'}) == 'apple');
+        System.assert(StringInterviewQuestions.findLongestWord('abpcplea',new List<String>{'a', 'b', 'c'}) == 'a');
+        System.assert(StringInterviewQuestions.findLongestWord('treomypjtldegs',new List<String>{'temple', 'temp', 'temples'}) == 'temp');
         
     }
 
