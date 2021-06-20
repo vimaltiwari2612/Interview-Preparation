@@ -472,8 +472,197 @@ public class StringInterviewQuestions {
         return Integer.valueOf(a);
     }
     
+    /*
+    Length of the longest substring
+    Given a string S, find the length of the longest substring without repeating characters.
+
+        Example 1:
+        
+        Input:
+        S = "geeksforgeeks"
+        Output:
+        7
+        Explanation:
+        Longest substring is
+        "eksforg".
+        Example 2:
+        
+        Input:
+        S = "abdefgabef"
+        Output:
+        6
+        Explanation:
+        Longest substring are
+        "abdefg" , "bdefga" and "defgab".
+            
+    */
+    public static integer longestUniqueSubsttr(String S){
+        if(S == null || String.isBlank(S)) return 0;
+        //if S is a valid string
+        //list of characters for each window
+        List<Integer> characters = new List<Integer>();
+        integer maxCount = 0;
+        integer index = 0;
+        for(Integer i = 0 ; i < S.length() ; ){
+            Integer item = S.charAt(i); // gives the ASCII value
+            if(characters.contains(item)){//if already read,
+                if(maxCount < characters.size()){ //update the max count
+                    maxCount = characters.size(); // size of list will be the substring length of unique chars
+                }
+                characters.clear();//reset list
+                //from next index
+                index++;
+                i = index;
+                continue;
+            }
+            characters.add(item);
+            i++;
+        }
+        if(maxCount < characters.size()){ //update the max count
+            maxCount = characters.size(); // size of list will be the substring length of unique chars
+        }
+        return maxCount;
+    }
+    
+    /*
+    Given two strings consisting of lowercase english alphabets, the task is to check whether these strings are meta strings or not. Meta strings are the strings which can be made equal by exactly one swap in any of the strings. Equal string are not considered here as Meta strings.
+
+    Example 1:
+    
+    Input:
+    S1 = "geeks", S2 = "keegs"
+    Output: 1
+    Explanation: We can swap the 0th and 3rd
+    character of S2 to make it equal to S1.
+    â€‹Example 2:
+    
+    Input: 
+    S1 = "geeks", S2 = "geeks"
+    Output: 0
+    Explanation: Equal strings are not considered
+    Meta strings.
+    */
+    public static boolean metaStrings(String S1, String S2) 
+    { 
+        //if both equal
+        if(S1 == S2) return false;
+        //since a swap can make them equal, that means they have to have equal lengths, for one loop is fine
+        
+        for(integer i = 0; i < S1.length(); i++){
+            
+            //take a char
+            String a = S1.substring(i,i+1);
+            //find it's index in S2
+            integer index = S2.indexOf(a);
+    
+            if(index != -1 ){
+                if(index == i) continue;
+                String tempS2 = null;
+                if(i < index){
+                    String afterIndex = S2.substring(index+1);  //string from index to end
+                    String swapWith = S2.substring(index,index+1);//index of required char
+                    String swapTo = S2.substring(i,i+1); //current char in S2
+                    String beforeIndex = S2.substring(i+1,index); // string after i and before index
+                    String beforCurrentItem = S2.substring(0,i); //string  before i
+                    tempS2 = beforCurrentItem + swapWith + beforeIndex + swapTo + afterIndex;
+                }else{
+                    String afterIndex = S2.substring(i+1);
+                    String swapWith = S2.substring(index,index+1);//index of required char
+                    String swapTo = S2.substring(i,i+1); //current char in S2
+                    String beforeIndex = S2.substring(0,index);
+                    String beforCurrentItem = S2.substring(index+1,i);
+                    tempS2 = beforCurrentItem + swapWith + beforeIndex + swapTo + afterIndex;
+                }
+                //check for equality
+                System.debug(tempS2);
+                if(S1 == tempS2){
+                    return true;
+                }
+                
+            }else{
+                //not found index, can't be equal
+                return false;
+            }
+            
+        }
+        return false;
+    }
+    
+    /*
+    Generate binary string
+    Given a string containing of ‘0’, ‘1’ and ‘?’ - a wildcard character, generate all distinct binary strings that can be formed by replacing each wildcard character by either ‘0’ or ‘1’.
+
+        Example 1:
+        
+        Input: 1??0?101
+        Output: 10000101 10001101 10100101 10101101 
+        11000101 11001101 11100101 11101101
+        Explanation:
+        There will be 8 such possible strings that 
+        can be formed, they are 10000101, 10001101, 
+        10100101, 10101101, 11000101, 11001101, 
+        11100101 and 11101101.
+        Example 2:
+        
+        Input: 10?
+        Output: 100 101
+        Explanation: There are 2 such possible strings
+        and they are 100 and 101.
+    */
+    public static String generate_binary_string(String s){
+        //find the number of ?
+        integer count = 0;
+        for(String i : s.split('')){
+            if(i == '?') count++;
+        }
+        List<String> finalList = new List<String>();
+        finalList.add(s);//add the default String
+        //now we have the count, 
+        while(count > 0){
+            //get the final list count
+            integer listCount = finalList.size();
+            //with decrese of every count > 0, the list count will increase by 2
+            //that means, every time, 2 strings gets added to final list and reset strings will be updated too.
+            while(listCount > 0){
+                String item = finalList.get(0);
+                String revItem1 = item.reverse();
+                String revItem2 = item.reverse();
+                integer index = revItem1.indexOf('?');
+                //add 0 in one and 1 in one
+                revItem1 = revItem1.substring(0, index)+'0'+revItem1.substring(index + 1);
+                revItem2 = revItem2.substring(0, index)+'1'+revItem2.substring(index + 1);
+                //add both
+                finalList.add(revItem1.reverse());
+                finalList.add(revItem2.reverse());
+                //remove the orignal one
+                finalList.remove(0);
+                listCount--;
+            }
+            count--;
+        }
+        String finalStr = '';
+        for(String item : finalList){
+            finalStr += ',' +item;
+        }
+        return finalStr.trim().substring(1);
+    }
+    
     //testing
     public static void testMethods(){
+        
+        System.assertEquals(StringInterviewQuestions.generate_binary_string('1??0?101') ,'10000101,11000101,10100101,11100101,10001101,11001101,10101101,11101101' );
+        System.assertEquals(StringInterviewQuestions.generate_binary_string('10?') , '100,101');
+        System.assertEquals(StringInterviewQuestions.generate_binary_string('?0?') , '000,100,001,101');
+        
+        System.assert(StringInterviewQuestions.metaStrings('geeks','keegs') == true);
+        System.assert(StringInterviewQuestions.metaStrings('geeks','geeks') == false);
+        System.assert(StringInterviewQuestions.metaStrings('temp','tmep') == true);
+        
+        System.assert(StringInterviewQuestions.longestUniqueSubsttr('geeksforgeeks') == 7);
+        System.assert(StringInterviewQuestions.longestUniqueSubsttr('abdefgabef') == 6);
+        System.assert(StringInterviewQuestions.longestUniqueSubsttr('qwerty') == 6);
+        System.assert(StringInterviewQuestions.longestUniqueSubsttr('abcdhcbayr') == 7);
+        
         
         System.assert(StringInterviewQuestions.sumAll(new List<String>{'123','31'}) == 154);
         System.assert(StringInterviewQuestions.sumAll(new List<String>{'20','40','3'}) == 63);
