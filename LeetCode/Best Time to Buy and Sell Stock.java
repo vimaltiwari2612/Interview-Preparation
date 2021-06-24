@@ -52,4 +52,37 @@ public int maxProfit(int[] prices) {
     }
     return max;
 }
+ 
+ //Function to find the days of buying and selling stock for max profit.
+    int stockBuySell(int A[], int n) {
+        // code here
+        
+        //need to find the maximum in right for each element
+        //max right, after which there is a downfall or no element
+        Stack<Integer> stack = new Stack<>();
+        int[] NSR = new int[n];
+        NSR[n-1] = n-1; //saving the last index
+        stack.push(A[n-1]);
+        for(int i = n-2 ; i >= 0 ; i--){
+            if(A[i] > stack.peek()){//if current is greater then top, i.e. next item
+                NSR[i] = i; //save the index
+            }else{
+                NSR[i] = NSR[i+1]; //else copy from next
+            }
+            stack.push(A[i]);
+        }
+		int maxProfit = 0;
+        for(int i = 0; i < n ; i++){
+
+            int buy = A[i];
+            int sell = A[NSR[i]];
+            int profit = sell - buy;
+            if(maxProfit < profit){
+				maxProfit = profit;
+			}
+        }
+       //print the max profit
+	   return maxProfit;
+    }
+}
 
