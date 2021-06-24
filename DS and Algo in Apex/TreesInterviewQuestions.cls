@@ -516,6 +516,71 @@ public class TreesInterviewQuestions {
         return root;
     }
     
+    /*
+    Given the root of a binary tree, return all root-to-leaf paths in any order.
+
+        A leaf is a node with no children.
+        
+         
+        
+        Example 1:
+        
+        
+        Input: root = [1,2,3,null,5]
+        Output: ["1->2->5","1->3"]
+        Example 2:
+        
+        Input: root = [1]
+        Output: ["1"]
+            
+    */
+    public static List<String> binaryTreePaths(Tree root) {
+        List<String> finalList = new List<String>();
+        traverse(root,'',finalList);
+        return finalList;
+    }
+    
+    public static void traverse(Tree root, String path, List<String> finalList){
+        
+        if(root == null) return;
+        
+        path += '->'+String.valueOf(root.data);
+        
+        if(root.left == null && root.right == null){
+            finalList.add(path.substring(2));
+            return;
+        }
+        traverse(root.left,path,finalList);
+        traverse(root.right,path,finalList);
+    }
+    
+    /*
+    Given the root of a binary tree and an integer targetSum, return true if the tree has a root-to-leaf path such that adding up all the values along the path equals targetSum.
+
+    A leaf is a node with no children.
+    Input: root = [5,4,8,11,null,13,4,7,2,null,null,null,1], targetSum = 22
+    Output: true
+    
+    */
+    
+    public static boolean hasPathSum(Tree root, integer targetSum) {
+        
+        return hasPathSum(root,0,targetSum);
+    }
+    
+    public static boolean hasPathSum(Tree root, integer currentSum ,integer targetSum){
+        
+        if(root == null) return false;
+        currentSum += root.data;
+        
+        if(root.left == null && root.right == null && (targetSum - currentSum == 0)) return true;
+        
+        
+        return (hasPathSum(root.left, currentSum, targetSum) || hasPathSum(root.right, currentSum, targetSum));
+    }
+    
+    
+    
    
     //test cases
     public static void testMethods(){
@@ -524,10 +589,15 @@ public class TreesInterviewQuestions {
         Tree root = new Tree(1);
         system.assertEquals(height(root),0);
         insertionInBinaryTree(root,2);
+        system.assert(hasPathSum(root,3) == true);
+        system.assert(binaryTreePaths(root).get(0) == '1->2');
         system.assertEquals(height(root),1);
         insertionInBinaryTree(root,3);
+        system.assert(hasPathSum(root,4) == true);
         system.assertEquals(height(root),1);
         insertionInBinaryTree(root,4);
+        system.assert(hasPathSum(root,7) == true);
+        system.assert(hasPathSum(root,8) == false);
         system.assertEquals(height(root),2);
         
         nodes = new List<Tree>();
