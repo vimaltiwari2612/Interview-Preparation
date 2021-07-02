@@ -12,8 +12,8 @@ public class AccountRestClient {
         Map<String, String> request = new Map<String, String>();
         request.put('client_id','3MVG9fe4g9fhX0E61lMPpSttvhNgHVUAb3FjVr4_ijxyLWsMzzT7CJd2TTx2kSSWxtVXdCGZ2UQysYLtZNMBL');
         request.put('client_secret','0B79296852CD08F900EE3CF705D4900B7A41A23F09954303E3B0094D6D53BA39');
-        request.put('username','vimaltiwari@coviddata.com');
-        request.put('password','vimal78690aqnWqefEW2Z7VUrKJmmi0B0w');
+        request.put('username','');
+        request.put('password','');
         request.put('grant_type','password');
         
         String mapString = String.valueOf(request).replace(',','&')
@@ -168,7 +168,7 @@ public class AccountRestClient {
                     }
                     parser.skipChildren();
                 }
-            }
+            } 
         }
         
     }
