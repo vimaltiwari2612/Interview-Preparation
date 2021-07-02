@@ -78,8 +78,12 @@ global class AccountRestAPI {
     
     private static List<Account> getAccounts(RestRequest request){
         String accName = request.requestURI.substring(request.requestURI.lastIndexOf('/')+1);
-        List<String> idsOrNamesList = accName.split(',');
-        List<Account> results = (List<Account>)Database.query('SELECT '+getFields()+' FROM Account WHERE Name IN :idsOrNamesList OR ID in :idsOrNamesList');
+        String whereClause = '';
+        if(accName != 'ALL'){
+        	List<String> idsOrNamesList = accName.split(',');
+            whereClause = 'WHERE Name IN :idsOrNamesList OR ID in :idsOrNamesList';
+        }
+        List<Account> results = (List<Account>)Database.query('SELECT '+getFields()+' FROM Account '+whereClause);
         return results;
     }
     
